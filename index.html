@@ -92,10 +92,10 @@ var createScene = function () {
     camera.keysLeft.push(65);
 
 
-    var myGround = BABYLON.MeshBuilder.CreateGround("myGround", { width: 60, height: 60, subdivsions: 4 }, scene);
+    var myGround = BABYLON.MeshBuilder.CreateGround("myGround", { width: 200, height: 200, subdivsions: 4 }, scene);
 
     var redMat = new BABYLON.StandardMaterial("redMat", scene);
-    redMat.diffuseTexture = new BABYLON.Texture("textures/grass.png", scene);
+    redMat.diffuseTexture = new BABYLON.Texture("textures/grass.jpg", scene);
     myGround.position.x = -13;
     myGround.position.z = 5;
     myGround.material = redMat;
@@ -106,7 +106,7 @@ var createScene = function () {
     light.intensity = 0.7;
 
     // Load room
-    const resultPromise = BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/cuongpo/babylon/main/", "solana-room.glb", scene);
+    const resultPromise = BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/cuongpo/babylon/main/", "solana-room-2k.glb", scene);
         resultPromise.then((result) => {
         result.meshes[0].position.y = 1;
         result.meshes[0].scaling = new BABYLON.Vector3(2, 2, 2);
@@ -114,6 +114,54 @@ var createScene = function () {
         result.checkCollisions = true;
     })
 
+    // Collide
+    var box = BABYLON.MeshBuilder.CreateBox('main_box',{height: 30, width: 30,depth:30},scene);
+    box.position.y=14;
+    box.position.x = 30;
+    box.visibility=0;
+    box.checkCollisions=true;
+
+    var box1 = BABYLON.MeshBuilder.CreateBox('main_box',{height: 30, width: 30,depth:30},scene);
+    box1.position.y=14;
+    box1.position.x = 15;
+    box1.position.z = -20;
+    box1.visibility=0;
+    box1.checkCollisions=true;
+
+    var box2 = BABYLON.MeshBuilder.CreateBox('main_box',{height: 30, width: 30,depth:30},scene);
+    box2.position.y=14;
+    box2.position.x = -10;
+    box2.position.z = -40;
+    box2.visibility=0;
+    box2.checkCollisions=true;
+
+    var box3 = BABYLON.MeshBuilder.CreateBox('main_box',{height: 30, width: 30,depth:30},scene);
+    box3.position.y=14;
+    box3.position.x = -35;
+    box3.position.z = -8;
+    box3.visibility= 0;
+    box3.checkCollisions=true;
+
+    var box4 = BABYLON.MeshBuilder.CreateBox('main_box',{height: 30, width: 30,depth:30},scene);
+    box4.position.y=14;
+    box4.position.x = -47;
+    box4.position.z = 20;
+    box4.visibility= 0;
+    box4.checkCollisions=true;
+
+    var box5 = BABYLON.MeshBuilder.CreateBox('main_box',{height: 30, width: 100,depth:30},scene);
+    box5.position.y=14;
+    box5.position.x = 0;
+    box5.position.z = 50;
+    box5.visibility= 0;
+    box5.checkCollisions=true
+
+    var box6 = BABYLON.MeshBuilder.CreateBox('main_box',{height: 30, width: 30,depth:50},scene);
+    box6.position.y=14;
+    box6.position.x = 20;
+    box6.position.z = 30;
+    box6.visibility= 0;
+    box6.checkCollisions=true
 
     return scene;
 
