@@ -3,7 +3,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-        <title>Babylon.js sample code</title>
+        <title>Solana Room</title>
 
         <!-- Babylon.js -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
@@ -91,77 +91,20 @@ var createScene = function () {
     camera.keysRight.push(68);
     camera.keysLeft.push(65);
 
-    //Controls...Mouse
-    //We start without being locked.
-    var isLocked = false;
-
-    // On click event, request pointer lock
-    scene.onPointerDown = function (evt) {
-
-        //true/false check if we're locked, faster than checking pointerlock on each single click.
-        if (!isLocked) {
-            canvas.requestPointerLock = canvas.requestPointerLock || canvas.msRequestPointerLock || canvas.mozRequestPointerLock || canvas.webkitRequestPointerLock;
-            if (canvas.requestPointerLock) {
-                canvas.requestPointerLock();
-            }
-        }
-
-    };
-
-
-    // Event listener when the pointerlock is updated (or removed by pressing ESC for example).
-    var pointerlockchange = function () {
-        var controlEnabled = document.mozPointerLockElement || document.webkitPointerLockElement || document.msPointerLockElement || document.pointerLockElement || null;
-
-        // If the user is already locked
-        if (!controlEnabled) {
-            //camera.detachControl(canvas);
-            isLocked = false;
-        } else {
-            //camera.attachControl(canvas);
-            isLocked = true;
-        }
-    };
-
-    // Attach events to the document
-    document.addEventListener("pointerlockchange", pointerlockchange, false);
-    document.addEventListener("mspointerlockchange", pointerlockchange, false);
-    document.addEventListener("mozpointerlockchange", pointerlockchange, false);
-    document.addEventListener("webkitpointerlockchange", pointerlockchange, false);
-
 
     var myGround = BABYLON.MeshBuilder.CreateGround("myGround", { width: 200, height: 200, subdivsions: 4 }, scene);
 
     var redMat = new BABYLON.StandardMaterial("redMat", scene);
     redMat.diffuseTexture = new BABYLON.Texture("textures/grass.png", scene);
 
-
-
     myGround.material = redMat;
-
-
-
-
-
-
-
 
     myGround.checkCollisions = true;
 
-
-
-
-    
     var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-
-
-
-
-
     light.intensity = 0.7;
 
-
-
+    // Load room
     const resultPromise = BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/cuongpo/babylon/main/", "solana-room.glb", scene);
         resultPromise.then((result) => {
         result.meshes[0].position.y = 1;
@@ -171,12 +114,10 @@ var createScene = function () {
     })
 
 
-
-
     return scene;
 
 };
-                window.initFunction = async function() {
+    window.initFunction = async function() {
                     
                     
                     var asyncEngineCreation = async function() {
