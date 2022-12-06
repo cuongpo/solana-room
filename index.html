@@ -58,7 +58,7 @@
 var createScene = function () {
     var scene = new BABYLON.Scene(engine);
 
-    scene.gravity = new BABYLON.Vector3(0, -.75, 0);
+    scene.gravity = new BABYLON.Vector3(0, -0.75, 0);
     scene.collisionsEnabled = true;
     scene.enablePhysics();
 
@@ -92,11 +92,12 @@ var createScene = function () {
     camera.keysLeft.push(65);
 
 
-    var myGround = BABYLON.MeshBuilder.CreateGround("myGround", { width: 200, height: 200, subdivsions: 4 }, scene);
+    var myGround = BABYLON.MeshBuilder.CreateGround("myGround", { width: 60, height: 60, subdivsions: 4 }, scene);
 
     var redMat = new BABYLON.StandardMaterial("redMat", scene);
     redMat.diffuseTexture = new BABYLON.Texture("textures/grass.png", scene);
-
+    myGround.position.x = -13;
+    myGround.position.z = 5;
     myGround.material = redMat;
 
     myGround.checkCollisions = true;
