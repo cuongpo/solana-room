@@ -103,10 +103,10 @@ var createScene = function () {
     myGround.checkCollisions = true;
 
     var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-    light.intensity = 0.7;
+    light.intensity = 2.0;
 
     // Load room
-    const resultPromise = BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/cuongpo/babylon/main/", "solana-room-2k.glb", scene);
+    const resultPromise = BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/cuongpo/babylon/main/", "solana-room.glb", scene);
         resultPromise.then((result) => {
         result.meshes[0].position.y = 1;
         result.meshes[0].scaling = new BABYLON.Vector3(2, 2, 2);
