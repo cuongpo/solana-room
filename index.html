@@ -114,6 +114,18 @@ var createScene = function () {
         result.checkCollisions = true;
     })
 
+    const resultPromise2 = BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/cuongpo/babylon/main/", "solana-token.glb", scene);
+        resultPromise2.then((result) => {
+        result.meshes[0].position.x = -10;
+        result.meshes[0].position.y = 5;
+        result.meshes[0].position.z = 0;
+        result.meshes[0].scaling = new BABYLON.Vector3(40, 40, 40);
+        result.meshes[0].rotationQuaternion = undefined;
+        scene.beforeRender = () => {
+            result.meshes[0].rotation.y += 0.01;
+        };
+    })
+        /*
     // Collide
     var box = BABYLON.MeshBuilder.CreateBox('main_box',{height: 30, width: 30,depth:30},scene);
     box.position.y=14;
@@ -162,7 +174,7 @@ var createScene = function () {
     box6.position.z = 30;
     box6.visibility= 0;
     box6.checkCollisions=true
-
+    */
     return scene;
 
 };
