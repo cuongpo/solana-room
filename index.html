@@ -22,23 +22,102 @@
         <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
 
         <style>
-            html, body {
-                overflow: hidden;
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
+      html,
+      body {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
 
-            #renderCanvas {
-                width: 100%;
-                height: 100%;
-                touch-action: none;
-            }
-        </style>
+      #renderCanvas {
+        width: 100%;
+        height: 100%;
+        touch-action: none;
+      }
+
+      .modal {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transform: scaleX(1.1) scaleY(1.1);
+        transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+        font-family: sans-serif;
+      }
+
+      .modal-content {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 1rem 1.5rem;
+        width: 60%;
+        height: 60%;
+        border-radius: 0.5rem;
+        z-index: 99000 !important;
+
+      }
+
+      .close-button {
+        float: right;
+        width: 1.5rem;
+        line-height: 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        border-radius: 0.25rem;
+        background-color: lightgray;
+      }
+
+      .close-button:hover {
+        background-color: darkgray;
+      }
+
+      .show-modal {
+        opacity: 1;
+        visibility: visible;
+        transform: scaleX(1.0) scaleY(1.0);
+        transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+      }
+
+
+    </style>
     </head>
 <body>
+    <div class="modal">
+      <div class="modal-content">
+        <iframe id="iframe" src="https://polygon.brolab.io" width=100% height=100%></iframe>
+      </div>
+    </div>
     <canvas id="renderCanvas"></canvas>
+    <script>
+      var modal = document.querySelector(".modal");
+      var trigger = document.querySelector(".trigger");
+      var iframe = document .querySelector("#iframe");
+      function toggleModal(nftId) {
+        var nftLink = "https://polygon.brolab.io/nfts/" + nftId;
+        console.log(nftLink);
+        iframe.setAttribute("src",nftLink);
+        modal.classList.toggle("show-modal");
+        var closeButton = document.querySelector(".close-button");
+        // closeButton.addEventListener("click", console.log("ABC"));
+      }
+      
+      function windowOnClick(event) {
+          if (event.target === modal) {
+              toggleModal();
+          }
+      };
+
+      window.addEventListener("click", windowOnClick);
+    </script>
+ 
     <script>
         var canvas = document.getElementById("renderCanvas");
 
@@ -106,7 +185,7 @@ var createScene = function () {
     light.intensity = 2.0;
 
     // Load room
-    const resultPromise = BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/cuongpo/babylon/main/", "solana-room.glb", scene);
+    const resultPromise = BABYLON.SceneLoader.ImportMeshAsync("", "https://raw.githubusercontent.com/cuongpo/babylon/main/", "solana-room-2k.glb", scene);
         resultPromise.then((result) => {
         result.meshes[0].position.y = 1;
         result.meshes[0].scaling = new BABYLON.Vector3(2, 2, 2);
@@ -126,7 +205,8 @@ var createScene = function () {
         };
     })
         
-    // Collide
+    // Collide 
+     
     var box = BABYLON.MeshBuilder.CreateBox('main_box',{height: 30, width: 30,depth:30},scene);
     box.position.y=14;
     box.position.x = 30;
@@ -135,21 +215,21 @@ var createScene = function () {
 
     var box1 = BABYLON.MeshBuilder.CreateBox('main_box',{height: 30, width: 30,depth:30},scene);
     box1.position.y=14;
-    box1.position.x = 15;
-    box1.position.z = -20;
+    box1.position.x = 20;
+    box1.position.z = -22;
     box1.visibility=0;
     box1.checkCollisions=true;
 
     var box2 = BABYLON.MeshBuilder.CreateBox('main_box',{height: 30, width: 30,depth:30},scene);
     box2.position.y=14;
     box2.position.x = -10;
-    box2.position.z = -40;
+    box2.position.z = -41;
     box2.visibility=0;
     box2.checkCollisions=true;
 
     var box3 = BABYLON.MeshBuilder.CreateBox('main_box',{height: 30, width: 30,depth:30},scene);
     box3.position.y=14;
-    box3.position.x = -35;
+    box3.position.x = -38;
     box3.position.z = -8;
     box3.visibility= 0;
     box3.checkCollisions=true;
@@ -175,14 +255,222 @@ var createScene = function () {
     box6.visibility= 0;
     box6.checkCollisions=true
     
+    // NFT images display
+    // NFT 1
+    const image = new BABYLON.StandardMaterial("test");
+    image.diffuseTexture = new BABYLON.Texture("./textures/1.jpg");
+
+    const playerPicture = BABYLON.MeshBuilder.CreatePlane("playerPicture", {height: 16, width: 13});
+    playerPicture.material = image;
+    playerPicture.position.y = 6.55;
+    playerPicture.position.x = 4.38;
+    playerPicture.position.z = 16.35;
+    playerPicture.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+    playerPicture.rotation.y = BABYLON.Tools.ToRadians(90);
+    scene.onPointerObservable.add(function(evt){
+        if(evt.pickInfo.pickedMesh === playerPicture){
+            toggleModal(22);
+        }
+    }, BABYLON.PointerEventTypes.POINTERPICK);
+
+    // NFT 2
+    const image2 = new BABYLON.StandardMaterial("test");
+    image2.diffuseTexture = new BABYLON.Texture("./textures/2.jpg");
+
+    const playerPicture2 = BABYLON.MeshBuilder.CreatePlane("playerPicture", {height: 16, width: 13});
+    playerPicture2.material = image2;
+    playerPicture2.position.y = 6.55;
+    playerPicture2.position.x = 4.38;
+    playerPicture2.position.z = 11.35;
+    playerPicture2.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+    playerPicture2.rotation.y = BABYLON.Tools.ToRadians(90);
+    scene.onPointerObservable.add(function(evt){
+        if(evt.pickInfo.pickedMesh === playerPicture2){
+            toggleModal(23);
+        }
+    }, BABYLON.PointerEventTypes.POINTERPICK);
+
+    // NFT 3
+    const image3 = new BABYLON.StandardMaterial("test");
+    image3.diffuseTexture = new BABYLON.Texture("./textures/3.jpg");
+
+    const playerPicture3 = BABYLON.MeshBuilder.CreatePlane("playerPicture", {height: 21, width: 13});
+    playerPicture3.material = image3;
+    playerPicture3.position.y = 6.15;
+    playerPicture3.position.x = 4.05;
+    playerPicture3.position.z = -9.8;
+    playerPicture3.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+    playerPicture3.rotation.y = BABYLON.Tools.ToRadians(90);
+    scene.onPointerObservable.add(function(evt){
+        if(evt.pickInfo.pickedMesh === playerPicture3){
+            toggleModal(24);
+        }
+    }, BABYLON.PointerEventTypes.POINTERPICK);
+
+    // NFT 4
+    const image4 = new BABYLON.StandardMaterial("test");
+    image4.diffuseTexture = new BABYLON.Texture("./textures/4.jpg");
+
+    const playerPicture4 = BABYLON.MeshBuilder.CreatePlane("playerPicture", {height: 21, width: 13});
+    playerPicture4.material = image4;
+    playerPicture4.position.y = 6.15;
+    playerPicture4.position.x = 2.75;
+    playerPicture4.position.z = -15.8;
+    playerPicture4.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+    playerPicture4.rotation.y = BABYLON.Tools.ToRadians(90);
+    scene.onPointerObservable.add(function(evt){
+        if(evt.pickInfo.pickedMesh === playerPicture4){
+            toggleModal(25);
+        }
+    }, BABYLON.PointerEventTypes.POINTERPICK);
+
+    // NFT 5
+    const image5 = new BABYLON.StandardMaterial("test");
+    image5.diffuseTexture = new BABYLON.Texture("./textures/5.jpg");
+
+    const playerPicture5 = BABYLON.MeshBuilder.CreatePlane("playerPicture", {height: 21, width: 13});
+    playerPicture5.material = image5;
+    playerPicture5.position.y = 6.15;
+    playerPicture5.position.x = 4.05;
+    playerPicture5.position.z = -22;
+    playerPicture5.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+    playerPicture5.rotation.y = BABYLON.Tools.ToRadians(90);
+    scene.onPointerObservable.add(function(evt){
+        if(evt.pickInfo.pickedMesh === playerPicture5){
+            toggleModal(26);
+        }
+    }, BABYLON.PointerEventTypes.POINTERPICK);
+
+    // NFT 6
+    const image6 = new BABYLON.StandardMaterial("test");
+    image6.diffuseTexture = new BABYLON.Texture("./textures/6.jpg");
+
+    const playerPicture6 = BABYLON.MeshBuilder.CreatePlane("playerPicture", {height: 12.2, width: 12.4});
+    playerPicture6.material = image6;
+    playerPicture6.position.y = 6.48;
+    playerPicture6.position.x = 0.52;
+    playerPicture6.position.z = -25.5;
+    playerPicture6.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+    playerPicture6.rotation.y = BABYLON.Tools.ToRadians(-180);
+    scene.onPointerObservable.add(function(evt){
+        if(evt.pickInfo.pickedMesh === playerPicture6){
+            toggleModal(27);
+        }
+    }, BABYLON.PointerEventTypes.POINTERPICK);
+
+    // NFT 7
+    const image7 = new BABYLON.StandardMaterial("test");
+    image7.diffuseTexture = new BABYLON.Texture("./textures/7.jpg");
+
+    const playerPicture7 = BABYLON.MeshBuilder.CreatePlane("playerPicture", {height: 19.65, width: 13.5});
+    playerPicture7.material = image7;
+    playerPicture7.position.y = 6.05;
+    playerPicture7.position.x = -9.42;
+    playerPicture7.position.z = -25.63;
+    playerPicture7.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+    playerPicture7.rotation.y = BABYLON.Tools.ToRadians(-180);
+    scene.onPointerObservable.add(function(evt){
+        if(evt.pickInfo.pickedMesh === playerPicture7){
+            toggleModal(28);
+        }
+    }, BABYLON.PointerEventTypes.POINTERPICK);
+    
+    // NFT 8
+    const image8 = new BABYLON.StandardMaterial("test");
+    image8.diffuseTexture = new BABYLON.Texture("./textures/8.jpg");
+
+    const playerPicture8 = BABYLON.MeshBuilder.CreatePlane("playerPicture", {height: 14.1, width: 12.2});
+    playerPicture8.material = image8;
+    playerPicture8.position.y = 6.365;
+    playerPicture8.position.x = -19.51;
+    playerPicture8.position.z = -25.48;
+    playerPicture8.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+    playerPicture8.rotation.y = BABYLON.Tools.ToRadians(-180);
+    scene.onPointerObservable.add(function(evt){
+        if(evt.pickInfo.pickedMesh === playerPicture8){
+            toggleModal(29);
+        }
+    }, BABYLON.PointerEventTypes.POINTERPICK);
+
+    // NFT 9
+    const image9 = new BABYLON.StandardMaterial("test");
+    image9.diffuseTexture = new BABYLON.Texture("./textures/9.jpg");
+
+    const playerPicture9 = BABYLON.MeshBuilder.CreatePlane("playerPicture", {height: 18, width: 12.5});
+    playerPicture9.material = image9;
+    playerPicture9.position.y = 6.255;
+    playerPicture9.position.x = -22.90;
+    playerPicture9.position.z = -22.09;
+    playerPicture9.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+    playerPicture9.rotation.y = BABYLON.Tools.ToRadians(-90);
+    scene.onPointerObservable.add(function(evt){
+        if(evt.pickInfo.pickedMesh === playerPicture9){
+            toggleModal(30);
+        }
+    }, BABYLON.PointerEventTypes.POINTERPICK);
+
+    // NFT 10
+    const image10 = new BABYLON.StandardMaterial("test");
+    image10.diffuseTexture = new BABYLON.Texture("./textures/10.jpg");
+
+    const playerPicture10 = BABYLON.MeshBuilder.CreatePlane("playerPicture", {height: 18, width: 12.5});
+    playerPicture10.material = image10;
+    playerPicture10.position.y = 6.255;
+    playerPicture10.position.x = -22.90;
+    playerPicture10.position.z = -22.09;
+    playerPicture10.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+    playerPicture10.rotation.y = BABYLON.Tools.ToRadians(-90);
+    scene.onPointerObservable.add(function(evt){
+        if(evt.pickInfo.pickedMesh === playerPicture10){
+            toggleModal(31);
+        }
+    }, BABYLON.PointerEventTypes.POINTERPICK);
+
+    // NFT 11
+    const image11 = new BABYLON.StandardMaterial("test");
+    image11.diffuseTexture = new BABYLON.Texture("./textures/11.jpg");
+
+    const playerPicture11 = BABYLON.MeshBuilder.CreatePlane("playerPicture", {height: 12.1, width: 9.8});
+    playerPicture11.material = image11;
+    playerPicture11.position.y = 6.85;
+    playerPicture11.position.x = -21.9;
+    playerPicture11.position.z = -16.07;
+    playerPicture11.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+    playerPicture11.rotation.y = BABYLON.Tools.ToRadians(-90);
+    scene.onPointerObservable.add(function(evt){
+        if(evt.pickInfo.pickedMesh === playerPicture11){
+            toggleModal(32);
+        }
+    }, BABYLON.PointerEventTypes.POINTERPICK);
+
+    // NFT 12
+    const image12 = new BABYLON.StandardMaterial("test");
+    image12.diffuseTexture = new BABYLON.Texture("./textures/12.jpg");
+
+    const playerPicture12 = BABYLON.MeshBuilder.CreatePlane("playerPicture", {height: 15.4, width: 14.5});
+    playerPicture12.material = image12;
+    playerPicture12.position.y = 6.6;
+    playerPicture12.position.x = -22.90;
+    playerPicture12.position.z = -9.49;
+    playerPicture12.scaling = new BABYLON.Vector3(0.3, 0.3, 0.3);
+    playerPicture12.rotation.y = BABYLON.Tools.ToRadians(-90);
+    scene.onPointerObservable.add(function(evt){
+        if(evt.pickInfo.pickedMesh === playerPicture12){
+            toggleModal(33);
+        }
+    }, BABYLON.PointerEventTypes.POINTERPICK);
+
+
     return scene;
 
 };
+
+    // core - don't change
     window.initFunction = async function() {
                     
                     
-                    var asyncEngineCreation = async function() {
-                        try {
+    var asyncEngineCreation = async function() {
+        try {
                         return createDefaultEngine();
                         } catch(e) {
                         console.log("the available createEngine function failed. Creating the default engine instead");
