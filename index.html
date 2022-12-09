@@ -102,6 +102,9 @@
       var iframe = document .querySelector("#iframe");
       function toggleModal(nftId) {
         var nftLink = "https://polygon.brolab.io/nfts/" + nftId;
+        if (nftId == 0) {
+            nftLink = "https://solana.brolab.io/collections/NyXgPoqcioPJAmSkAvwLXuAvcfwsKbn2d1BKRroWCpJ/pools/premium-pool";
+        };
         console.log(nftLink);
         iframe.setAttribute("src",nftLink);
         modal.classList.toggle("show-modal");
@@ -203,6 +206,14 @@ var createScene = function () {
         scene.beforeRender = () => {
             result.meshes[0].rotation.y += 0.01;
         };
+        console.log(result.meshes[0]);
+        scene.onPointerUp = function(evt, pickResult) {
+                       if (pickResult.hit) {
+                           if (pickResult.pickedMesh.name=="Cylinder") {
+                               toggleModal(0); 
+                           }
+                       }
+        }
     })
         
     // Collide 
@@ -459,6 +470,8 @@ var createScene = function () {
             toggleModal(33);
         }
     }, BABYLON.PointerEventTypes.POINTERPICK);
+
+   
 
 
     return scene;
